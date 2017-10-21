@@ -1,0 +1,91 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
+    dexOptions {
+        preDexLibraries = false
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    defaultConfig {
+        applicationId "wellthy.care"
+        android.defaultConfig.vectorDrawables.useSupportLibrary = true
+        minSdkVersion 16
+        targetSdkVersion 26
+        versionCode 1000
+        // Major -> Millions, Minor -> Thousands, Bugzx -> Hundreds. E.g 1.3.72 == 1,003,072
+        versionName '0.0.1'
+        multiDexEnabled true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'LICENSE.txt'
+        exclude 'licenses/javolution.license.TXT'
+        exclude 'META-INF/license/LICENSE.base64.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'org/apache/maven/project/pom-4.0.0.xml'
+        exclude 'META-INF/rxjava.properties'
+        exclude 'licenses/extreme.indiana.edu.license.TXT'
+        exclude 'org/cyberneko/html/res/'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+
+apply from: 'dependencies.gradle'
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation supportLibs
+    implementation networkLibs
+    implementation rxJavaLibs
+    implementation loggingLibs
+    implementation dbLib
+    implementation archCompLibs
+    implementation daggerLibs
+    implementation 'com.google.firebase:firebase-auth:11.4.2'
+
+    // Utils
+    implementation 'net.danlew:android.joda:2.9.9'
+    implementation imageLoadingLibs
+    implementation('com.readystatesoftware.chuck:library:1.1.0') {
+        exclude group: 'com.google.code.gson', module: 'gson'
+    }
+    implementation('com.amitshekhar.android:debug-db:1.0.1') {
+        exclude group: 'com.google.code.gson', module: 'gson'
+    }
+    // Priority Job Queue
+    implementation "com.birbit:android-priority-jobqueue:$versions.priorityJobQueueVersion"
+    //GCM Network Manager
+    implementation "com.google.android.gms:play-services-gcm:$versions.playServicesVersion"
+
+    // UI
+    implementation 'com.github.armcha:SpaceNavigationView:1.6.0'
+
+    // Annotation processing
+    kapt archCompCompiler
+    kapt roomCompiler
+    kapt daggerCompilerLibs
+
+    // Testing
+  //  implementation unitTestLibs
+   // implementation androidTestsLibs
+}
+
