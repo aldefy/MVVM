@@ -17,6 +17,7 @@ data class Note(
 ) : Serializable {
     @PrimaryKey(autoGenerate = true)
     @field:SerializedName("_id")
+    @ColumnInfo(name = "_id")
     var noteId: Long = -1
 
     constructor() : this("", "")

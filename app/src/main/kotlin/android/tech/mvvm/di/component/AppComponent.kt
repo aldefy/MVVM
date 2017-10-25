@@ -4,7 +4,6 @@ import android.tech.mvvm.MainApp
 import android.tech.mvvm.data.remote.RemoteNotesApi
 import android.tech.mvvm.di.module.*
 import android.tech.mvvm.domain.services.jobs.BaseJob
-import android.tech.mvvm.feature.list.NotesActivity
 import android.tech.mvvm.helpers.rx.AppRxSchedulers
 import dagger.BindsInstance
 import dagger.Component
@@ -16,14 +15,14 @@ import javax.inject.Singleton
  */
 @Singleton
 @Component(modules = arrayOf(
-        AppModule::class,
         AndroidInjectionModule::class,
+        AppModule::class,
+        UIBuilder::class,
+        // ViewModelModule::class,
         NetworkModule::class,
         RxModule::class,
-        ApiModule::class,
-        ActivityBuilder::class,
-        NotesActivityModule::class
-))
+        ApiModule::class
+        ))
 interface AppComponent {
     @Component.Builder
     interface Builder {
@@ -34,7 +33,8 @@ interface AppComponent {
     }
 
     fun inject(app: MainApp)
-    fun inject(notesActivity: NotesActivity)
+  //  fun inject(notesActivity: NotesActivity)
+   // fun inject(detailActivity: NotesDetailActivity)
     fun inject(job: BaseJob)
 
     fun api(): RemoteNotesApi

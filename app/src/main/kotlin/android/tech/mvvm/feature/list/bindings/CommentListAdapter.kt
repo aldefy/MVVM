@@ -3,17 +3,20 @@ package android.tech.mvvm.feature.list.bindings
 import android.support.v7.widget.RecyclerView
 import android.tech.mvvm.R
 import android.tech.mvvm.data.db.entities.Note
+import android.tech.mvvm.helpers.RVItemClickListener
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import timber.log.Timber
 
-class NotesRVAdapter(private val notes: MutableList<Note>?) : RecyclerView.Adapter<NotesRVAdapter.ViewHolder>() {
+class NotesRVAdapter(private val notes: MutableList<Note>?, var clickListener: RVItemClickListener) : RecyclerView.Adapter<NotesRVAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val commentText = LayoutInflater.from(parent.context)
+        val rootView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.layout_rv_item_note, parent, false) as TextView
-        return ViewHolder(commentText)
+        val viewHolder = ViewHolder(noteTextView = rootView)
+        rootView.setOnClickListener { clickListener.onItemClick(it, viewHolder.adapterPosition) }
+        return viewHolder
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

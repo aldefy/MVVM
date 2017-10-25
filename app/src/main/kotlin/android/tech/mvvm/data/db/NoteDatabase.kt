@@ -7,7 +7,7 @@ import android.tech.mvvm.data.db.entities.Note
 
 @Database(
         entities = arrayOf(Note::class),
-        version = 1,
+        version = 2,
         exportSchema = false
 )
 abstract class NoteDatabase : RoomDatabase() {

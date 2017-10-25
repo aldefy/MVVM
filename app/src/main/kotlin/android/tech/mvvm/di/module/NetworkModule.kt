@@ -1,7 +1,6 @@
 package android.tech.mvvm.di.module
 
 import android.content.Context
-import android.tech.mvvm.BuildConfig
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.readystatesoftware.chuck.ChuckInterceptor
@@ -36,10 +35,10 @@ class NetworkModule {
     }
 
     private fun getInterceptorLevel(): HttpLoggingInterceptor.Level {
-        return if (BuildConfig.DEBUG)
-            HttpLoggingInterceptor.Level.BODY
-        else
-            HttpLoggingInterceptor.Level.NONE
+       /* return if (BuildConfig.DEBUG)*/
+           return  HttpLoggingInterceptor.Level.BODY
+      /*  else
+            HttpLoggingInterceptor.Level.NONE*/
     }
 
     @Provides

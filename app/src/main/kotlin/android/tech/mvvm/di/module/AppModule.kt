@@ -3,19 +3,18 @@ package android.tech.mvvm.di.module
 import android.arch.persistence.room.Room
 import android.content.Context
 import android.tech.mvvm.MainApp
-import android.tech.mvvm.data.db.LocalNoteDataStore
 import android.tech.mvvm.data.db.NoteDatabase
 import android.tech.mvvm.data.db.dao.NoteDao
-import android.tech.mvvm.data.remote.RemoteNoteDataStore
-import android.tech.mvvm.domain.LocalNoteRepository
-import android.tech.mvvm.domain.RemoteNoteRepository
+import android.tech.mvvm.data.remote.RemoteNotesApi
+import android.tech.mvvm.domain.NotesRepository
+import android.tech.mvvm.helpers.rx.AppRxSchedulers
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
 
 // Add application level bindings here, e.g.: RestClientApi, Repository, etc.
-@Module
+@Module(includes = arrayOf(ViewModelModule::class))
 class AppModule {
 
 
@@ -35,14 +34,8 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideLocalNotesRepository(noteDao: NoteDao): LocalNoteRepository {
-        return LocalNoteDataStore(noteDao)
-    }
-
-    @Singleton
-    @Provides
-    fun provideRemoteNotesRepository(): RemoteNoteRepository {
-        return RemoteNoteDataStore()
+    fun provideNotesRepository(noteDao: NoteDao, api: RemoteNotesApi, rxSchedulers: AppRxSchedulers): NotesRepository {
+        return NotesRepository(noteDao = noteDao, api = api, rxSchedulers = rxSchedulers)
     }
 
 }

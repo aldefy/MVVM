@@ -1,38 +1,27 @@
 package android.tech.mvvm.feature.list
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LifecycleRegistry
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.tech.mvvm.R
-import android.tech.mvvm.domain.SyncNoteLifecycleObserver
+import android.tech.mvvm.feature.details.NotesDetailActivity
 import android.tech.mvvm.feature.list.bindings.NotesRVAdapter
+import android.tech.mvvm.helpers.RVItemClickListener
+import android.tech.mvvm.helpers.ViewModelFactory
 import android.tech.mvvm.helpers.getDrawableCompat
-import android.tech.mvvm.presentation.NotesViewModel
-import android.tech.mvvm.presentation.NotesViewModelFactory
+import android.view.View
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_notes.*
-import java.util.Date
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
-class NotesActivity : AppCompatActivity(), LifecycleOwner {
-    @Inject
-    lateinit var viewModelFactory: NotesViewModelFactory
+class NotesActivity : AppCompatActivity(), RVItemClickListener {
 
-    @Inject
-    lateinit var syncNoteLifecycleObserver: SyncNoteLifecycleObserver
-    private lateinit var viewModel: NotesViewModel
-    private var registry = LifecycleRegistry(this)
+
+    @Inject lateinit var viewModelFactory: ViewModelFactory
     private lateinit var notesAdapter: NotesRVAdapter
-
-    override fun getLifecycle(): Lifecycle {
-        return registry
-    }
+    private val viewModel by lazy { ViewModelProviders.of(this@NotesActivity, viewModelFactory).get(NotesViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -49,11 +38,9 @@ class NotesActivity : AppCompatActivity(), LifecycleOwner {
     }
 
     private fun init() {
-        fab.setOnClickListener { viewModel.addNote("Test note" + Date().toString(), Date().toString()) }
+        fab.setOnClickListener { viewModel.addNote() }
         initRecyclerView()
-        lifecycle.addObserver(syncNoteLifecycleObserver)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(NotesViewModel::class.java)
-        viewModel.notes().observe(
+        viewModel.notesList.observe(
                 this, Observer { notes ->
             run {
                 if (notes != null) {
@@ -70,7 +57,12 @@ class NotesActivity : AppCompatActivity(), LifecycleOwner {
         val recyclerViewLayoutManager = LinearLayoutManager(this)
         rvNotes.layoutManager = recyclerViewLayoutManager
 
-        notesAdapter = NotesRVAdapter(ArrayList())
+        notesAdapter = NotesRVAdapter(ArrayList(), this@NotesActivity)
         rvNotes.adapter = notesAdapter
     }
+
+    override fun onItemClick(v: View, position: Int) {
+        startActivity(NotesDetailActivity.newIntent(this@NotesActivity, viewModel.notesList.value!![position].noteId))
+    }
+
 }
