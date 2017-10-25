@@ -46,6 +46,28 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    flavorDimensions "default"
+    productFlavors {
+
+        development {
+            dimension "default"
+            getProps('./config/dev.props').each { p ->
+                buildConfigField 'String', p.key, p.value
+            }
+        }
+        production {
+            dimension "default"
+            getProps('./config/prod.props').each { p ->
+                buildConfigField 'String', p.key, p.value
+            }
+        }
+    }
+}
+
+def getProps(path) {
+    Properties props = new Properties()
+    props.load(new FileInputStream(file(path)))
+    return props
 }
 
 

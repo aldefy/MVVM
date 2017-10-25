@@ -1,5 +1,6 @@
 package android.tech.mvvm.di.module
 
+import android.tech.mvvm.BuildConfig
 import android.tech.mvvm.data.remote.RemoteNotesApi
 import dagger.Module
 import dagger.Provides
@@ -14,7 +15,7 @@ class ApiModule {
     @Singleton
     @Named("baseUrl")
     fun provideBaseUrl(): String {
-        return "http://192.168.1.4:3000/"
+        return BuildConfig.SERVER_URL
     }
 
     @Provides
